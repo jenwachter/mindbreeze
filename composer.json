@@ -1,0 +1,10 @@
+{
+  "name": "johnshopkins/mindbreeze",
+  "license": "MIT",
+  "homepage": "http://github.com/johnshopkins/mindbreeze",
+  "autoload": {
+    "psr-4" : {
+      "Mindbreeze\\" : ["src/"]
+    }
+  }
+}
