@@ -26,7 +26,7 @@ class Response
 
     if ($status !== 200) {
       // $_SESSION['search_qeng'] = null;
-      throw new \Exception('HTTP error', $status);
+      throw new \Mindbreeze\Exceptions\ResponseException('HTTP error', $status);
     }
 
     $body = $this->response->getBody();

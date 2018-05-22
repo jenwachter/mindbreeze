@@ -26,7 +26,7 @@ class ResponseTest extends BaseTest
   {
     $http = $this->createHTTPMock(null, 400);
 
-    $this->setExpectedException("Exception");
+    $this->setExpectedException("\\Mindbreeze\\Exceptions\\ResponseException");
     new Response($http);
   }
 

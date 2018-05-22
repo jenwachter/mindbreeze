@@ -196,7 +196,7 @@ class Request
   protected function getQeng()
   {
     if (!isset($_SESSION['search_qeng']) || !$_SESSION['search_qeng']) {
-      throw new \Exception('On page 2+ of search and QENG variables not set.');
+      throw new \Mindbreeze\Exceptions\RequestException('On page 2+ of search and QENG variables not set.');
     }
 
     return $_SESSION['search_qeng'];

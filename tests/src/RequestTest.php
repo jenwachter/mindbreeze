@@ -132,7 +132,7 @@ class RequestTest extends BaseTest
     $request->setQuery($query);
     $request->setPage(2);
 
-    $this->setExpectedException("Exception");
+    $this->setExpectedException("\\Mindbreeze\\Exceptions\\RequestException");
     $request->compileData();
   }
 
