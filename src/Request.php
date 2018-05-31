@@ -156,11 +156,22 @@ class Request
     // default data
 
     $defaults = [
+      // how many characters long the snippets are
       'content_sample_length' => $this->contentSampleLength,
+
+      // user query
       'query' => ['unparsed' => $this->query],
+
+      // how many results to return
       'count' => $this->perPage,
+
+      // how many 'pages' to return in 'result_pages' -- helps you present page navigation
       'max_page_count' => $this->pageCount,
+
+      // how many alternative queries to return
       'alternatives_query_spelling_max_estimated_count' => $this->alternatives,
+
+      // which properties to return with each search result
       'properties' => array_map(function ($property) {
         return [
           'formats' => ['HTML', 'VALUE'],
