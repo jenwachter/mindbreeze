@@ -14,8 +14,9 @@ class Response
 
   public $suggestion = null;
 
-  public function __construct($response)
+  public function __construct($encodedQuery, $response)
   {
+    $this->encodedQuery = $encodedQuery;
     $this->response = $response;
     $this->parse();
   }
@@ -36,7 +37,15 @@ class Response
       return;
     }
 
-    $_SESSION['search_qeng'] = $body->resultset->result_pages->qeng_ids;
+    /**
+     * Qeng variables are tied to the query term, so keep an encoded version
+     * of the query term alongside the qeng variables for validation
+     */
+    $_SESSION['search_qeng'] = [
+      'query' => $this->encodedQuery,
+      'vars' => $body->resultset->result_pages->qeng_ids
+    ];
+
     $this->records = $this->getRecords($body);
     $this->pagination = $this->getPagination($body);
     $this->suggestion = $this->getSuggestion($body);

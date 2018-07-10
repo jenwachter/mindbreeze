@@ -136,10 +136,29 @@ class RequestTest extends BaseTest
     $request->compileData();
   }
 
+  public function testCompileData__page2_qengNoMatch()
+  {
+    $query = 'hopkins';
+
+    $_SESSION['search_qeng'] = [
+      'query' => 'blah'
+    ];
+
+    $request = new Request($this->createHTTPMock());
+    $request->setQuery($query);
+    $request->setPage(2);
+
+    $this->setExpectedException("\\Mindbreeze\\Exceptions\\RequestException");
+    $request->compileData();
+  }
+
   public function testCompileData__page2()
   {
     $query = 'hopkins';
-    $_SESSION['search_qeng'] = 'qeng';
+    $_SESSION['search_qeng'] = [
+      'query' => base64_encode($query),
+      'vars' => 'qeng'
+    ];
 
     $request = new Request($this->createHTTPMock());
     $request->setQuery($query);

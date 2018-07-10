@@ -25,6 +25,13 @@ class Request
   public $query;
 
   /**
+   * Encoded version of query term used
+   * when looking up qeng variables
+   * @var string
+   */
+  public $encodedQuery;
+
+  /**
    * Page from which to return results
    * @var integer
    */
@@ -91,12 +98,13 @@ class Request
       'headers' => ['Content-Type' => 'application/json']
     ]);
 
-    return new \Mindbreeze\Response($response);
+    return new \Mindbreeze\Response($this->encodedQuery, $response);
   }
 
   public function setQuery($query)
   {
     $this->query = $query;
+    $this->encodedQuery = base64_encode($query);
     return $this;
   }
 
@@ -210,6 +218,10 @@ class Request
       throw new \Mindbreeze\Exceptions\RequestException('On page 2+ of search and QENG variables not set.');
     }
 
-    return $_SESSION['search_qeng'];
+    if (!isset($_SESSION['search_qeng']['query']) || $_SESSION['search_qeng']['query'] != $this->encodedQuery) {
+      throw new \Mindbreeze\Exceptions\RequestException('On page 2+ of search and QENG variables do not match queried term.');
+    }
+
+    return $_SESSION['search_qeng']['vars'];
   }
 }

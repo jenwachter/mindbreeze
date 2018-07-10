@@ -27,7 +27,7 @@ class ResponseTest extends BaseTest
     $http = $this->createHTTPMock(null, 400);
 
     $this->setExpectedException("\\Mindbreeze\\Exceptions\\ResponseException");
-    new Response($http);
+    new Response('blah', $http);
   }
 
   public function testParse__noResults()
@@ -36,7 +36,7 @@ class ResponseTest extends BaseTest
       'resultset' => []
     ]));
 
-    new Response($http);
+    new Response('blah', $http);
 
     $this->assertEquals(null, $_SESSION['search_qeng']);
   }
@@ -71,9 +71,9 @@ class ResponseTest extends BaseTest
       ]
     ]));
 
-    $response = new Response($http);
+    $response = new Response('blah', $http);
 
-    $this->assertEquals('QengIds', $_SESSION['search_qeng']);
+    $this->assertEquals('QengIds', $_SESSION['search_qeng']['vars']);
 
     $this->assertEquals([
       $this->arrayToObject([
