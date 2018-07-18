@@ -58,7 +58,7 @@ class Response
       $result->data = new \StdClass();
 
       foreach ($result->properties as $property) {
-        $name = strtolower($property->id);
+        $name = preg_replace('/[^A-Za-z0-9_]/', '_', strtolower($property->id));
         $result->data->$name = $property->data[0];
       }
 
