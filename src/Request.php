@@ -175,10 +175,10 @@ class Request
       return [];
     }
 
-    return $this->addConstraint('term', 'fqcategory', $this->constraints[$constraint]);
+    return $this->addConstraint('fqcategory', 'term', $this->constraints[$constraint]);
   }
 
-  public function addConstraint($type, $label, $data = [])
+  public function addConstraint($label, $type, $data = [])
   {
     $types = [
       'term' => 'Term'
