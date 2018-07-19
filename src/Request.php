@@ -19,6 +19,12 @@ class Request
   public $properties = [];
 
   /**
+   * Array of facets to fetch
+   * @var array
+   */
+  public $facets = [];
+
+  /**
    * Query term
    * @var string
    */
@@ -116,7 +122,14 @@ class Request
           'formats' => ['HTML', 'VALUE'],
           'name' => $property
         ];
-      }, $this->properties)
+      }, $this->properties),
+
+      'facets' => array_map(function ($facet) {
+        return [
+          'formats' => ['HTML'],
+          'name' => $facet
+        ];
+      }, $this->facets)
     ];
   }
 
