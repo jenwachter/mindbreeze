@@ -127,13 +127,15 @@ class Request
     $in = $this->constraints[$constraint];
     $out = array_diff($this->datasources, $in);
 
-    $this->data['source_context']['constraints'] = [
-      'filter_base' => array_map(function ($datasource) {
-        return $this->createFilter('fqcategory', $datasource);
-      }, array_values($in)),
-      'filtered' => array_map(function ($datasource) {
-        return $this->createFilter('fqcategory', $datasource);
-      }, array_values($out))
+    $this->data['source_context'] = [
+      'constraints' => [
+        'filter_base' => array_map(function ($datasource) {
+          return $this->createFilter('fqcategory', $datasource);
+        }, array_values($in)),
+        'filtered' => array_map(function ($datasource) {
+          return $this->createFilter('fqcategory', $datasource);
+        }, array_values($out))
+      ]
     ];
   }
 
