@@ -85,6 +85,39 @@ class Request
   public function __construct($http)
   {
     $this->http = $http;
+    $this->generateDefaultData();
+  }
+
+  protected function generateDefaultData()
+  {
+    $this->data = [
+      // how many characters long the snippets are
+      'content_sample_length' => $this->contentSampleLength,
+
+      // user query
+      'user' => [
+        'query' => [
+          'and' => ['unparsed' => '']
+        ]
+      ],
+
+      // how many results to return
+      'count' => $this->perPage,
+
+      // how many 'pages' to return in 'result_pages' -- helps you present page navigation
+      'max_page_count' => $this->pageCount,
+
+      // how many alternative queries to return
+      'alternatives_query_spelling_max_estimated_count' => $this->alternatives,
+
+      // which properties to return with each search result
+      'properties' => array_map(function ($property) {
+        return [
+          'formats' => ['HTML', 'VALUE'],
+          'name' => $property
+        ];
+      }, $this->properties)
+    ];
   }
 
   /**
@@ -103,14 +136,25 @@ class Request
 
   public function setQuery($query)
   {
-    $this->query = $query;
+    $this->data['user']['query']['and']['unparsed'] = $query;
     $this->encodedQuery = base64_encode($query);
     return $this;
   }
 
   public function setPage($page)
   {
-    $this->page = $page;
+    if ($this->page > 1) {
+      $this->data['result_pages'] = [
+        'qeng_ids' => $this->getQeng(),
+        'pages' => [
+          'starts' => [($this->page - 1) * $this->perPage],
+          'counts' => [$this->perPage],
+          'current_page' => true,
+          'page_number' => $this->page
+        ]
+      ];
+    }
+
     return $this;
   }
 
@@ -163,40 +207,7 @@ class Request
    */
   public function compileData()
   {
-    // default data
-
-    $defaults = [
-      // how many characters long the snippets are
-      'content_sample_length' => $this->contentSampleLength,
-
-      // user query
-      'user' => [
-        'query' => [
-          'and' => ['unparsed' => $this->query]
-        ]
-      ],
-
-      // how many results to return
-      'count' => $this->perPage,
-
-      // how many 'pages' to return in 'result_pages' -- helps you present page navigation
-      'max_page_count' => $this->pageCount,
-
-      // how many alternative queries to return
-      'alternatives_query_spelling_max_estimated_count' => $this->alternatives,
-
-      // which properties to return with each search result
-      'properties' => array_map(function ($property) {
-        return [
-          'formats' => ['HTML', 'VALUE'],
-          'name' => $property
-        ];
-      }, $this->properties)
-    ];
-
-    $this->data = array_merge($defaults, $this->data);
-
-    // pagination
+    // add pagination to data
 
     if ($this->page > 1) {
       $this->data['result_pages'] = [
