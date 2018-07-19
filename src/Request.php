@@ -97,7 +97,8 @@ class Request
       'user' => [
         'query' => [
           'and' => ['unparsed' => '']
-        ]
+        ],
+        'constraints' => []
       ],
 
       // how many results to return
@@ -165,7 +166,7 @@ class Request
   }
 
   /**
-   * Add a datasource constraint
+   * Add a datasource constraint to the query
    * @param string $constraint A defined constraint
    */
   public function addDatasourceConstraint($constraint)
@@ -174,31 +175,24 @@ class Request
       return [];
     }
 
-    $this->data['source_context'] = [
-      'constraints' => [
-        'filter_base' => array_map(function ($datasource) {
-          return $this->createFilter('fqcategory', $datasource);
-        }, array_values($this->constraints[$constraint]))
-      ]
-    ];
+    return $this->addConstraint('term', 'fqcategory', $this->constraints[$constraint]);
   }
 
-  /**
-   * Create boolean filter
-   * @param  string $label Filter label
-   * @param  string $term  Value of filter
-   * @return array  Filter array
-   */
-  protected function createFilter($label, $term, $type = 'and')
+  public function addConstraint($type, $label, $data = [])
   {
-    return [
-      $type => [
-        [
-          'label' => $label,
-          'quoted_term' => $term
-        ]
-      ]
+    $types = [
+      'term' => 'Term'
     ];
+
+    if (!isset($types[$type])) {
+      throw new \Mindbreeze\Exceptions\RequestException('Constraint type does not exist');
+    }
+
+    $className = '\\Mindbreeze\\Constraints\\' . $types[$type] . 'Constraint';
+    $constraint = new $className($label);
+    $this->data['user']['constraints'][] = $constraint->create($data)->compile();
+
+    return $this;
   }
 
   /**
