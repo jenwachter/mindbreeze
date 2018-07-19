@@ -68,13 +68,6 @@ class Request
   public $contentSampleLength = 300;
 
   /**
-   * Array of all datasources in the index
-   * Ex: Web:GazetteArchives
-   * @var array
-   */
-  public $datasources = [];
-
-  /**
    * Array of constraints based on datasources.
    * For example, 'gazette' => ['Web:GazetteArchivesPages', ['Web:GazetteArchivesWP']]
    * creates a gazette constraint that limits search to the two defined datasources
@@ -181,17 +174,11 @@ class Request
       return [];
     }
 
-    $in = $this->constraints[$constraint];
-    $out = array_diff($this->datasources, $in);
-
     $this->data['source_context'] = [
       'constraints' => [
         'filter_base' => array_map(function ($datasource) {
           return $this->createFilter('fqcategory', $datasource);
-        }, array_values($in)),
-        'filtered' => array_map(function ($datasource) {
-          return $this->createFilter('fqcategory', $datasource);
-        }, array_values($out))
+        }, array_values($this->constraints[$constraint]))
       ]
     ];
   }
