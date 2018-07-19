@@ -168,7 +168,11 @@ class Request
       'content_sample_length' => $this->contentSampleLength,
 
       // user query
-      'query' => ['unparsed' => $this->query],
+      'user' => [
+        'query' => [
+          'and' => ['unparsed' => $this->query]
+        ]
+      ],
 
       // how many results to return
       'count' => $this->perPage,
