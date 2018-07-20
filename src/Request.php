@@ -176,12 +176,31 @@ class Request
       return [];
     }
 
-    return $this->addConstraint('fqcategory', 'term', $this->constraints[$constraint]);
+    $this->data['source_context'] = [
+      'constraints' => $this->createConstraint('fqcategory', 'term', $this->constraints[$constraint])
+    ];
+
+    return $this;
   }
 
-  public function addConstraint($label, $type, $data = [])
+  /**
+   * Add a constraing to the query
+   * @param string $label Constraint label
+   * @param string $type  Constraint type (see $types)
+   * @param array  $data  Data to send to the constraint (varies between types)
+   * @param string $key   Where to place this constraint in the request data
+   */
+  public function addConstraint($label, $type, $data)
+  {
+    $this->data['user']['constraints'][] = $this->createConstraint($label, $type, $data);
+    return $this;
+  }
+
+  protected function createConstraint($label, $type, $data)
   {
     $types = [
+      'between' => 'BetweenValues',
+      'regex' => 'Regex',
       'term' => 'Term'
     ];
 
@@ -191,9 +210,7 @@ class Request
 
     $className = '\\Mindbreeze\\Constraints\\' . $types[$type] . 'Constraint';
     $constraint = new $className($label);
-    $this->data['user']['constraints'][] = $constraint->create($data)->compile();
-
-    return $this;
+    return $constraint->create($data)->compile();
   }
 
   /**

@@ -4,15 +4,18 @@ namespace Mindbreeze\Constraints;
 
 abstract class Constraint
 {
-  protected $filter = [];
+  protected $constraint = [];
+  protected $filters = [];
 
   public function __construct($label)
   {
-    $this->filter['label'] = $label;
+    $this->label = $label;
+    $this->constraint = ['label' => $label];
   }
 
   public function compile()
   {
-    return ['filter_base' => $this->filter];
+    $this->constraint['filter_base'] = $this->filters;
+    return $this->constraint;
   }
 }

@@ -2,7 +2,7 @@
 
 namespace Mindbreeze\Constraints;
 
-class TermConstraint extends Constraint
+class RegexConstraint extends Constraint
 {
   public function create($values = [])
   {
@@ -13,9 +13,8 @@ class TermConstraint extends Constraint
     foreach ($values as $value) {
       $this->filters[] = [
         'label' => $this->label,
-        'or' => array_map(function ($value) {
-          return ['quoted_term' => $value];
-        }, $values)  
+        'regex' => '^\Q' . $value . '\E$',
+        'value' => ['str' => $value]
       ];
     }
 
