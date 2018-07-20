@@ -2,7 +2,7 @@
 
 namespace Mindbreeze\Constraints;
 
-class BetweenValuesConstraint extends Constraint
+class BetweenDatesConstraint extends Constraint
 {
   public function create($values = [])
   {
@@ -14,18 +14,18 @@ class BetweenValuesConstraint extends Constraint
       'label' => $this->label,
       'and' => [
         [
-          'num' => $values[0],
+          'num' => $values[0] * 1000,
           'cmp' => 'GE',
           'unit' => 'ms_since_1970'
         ],
         [
-          'num' => $values[1],
+          'num' => $values[1] * 1000,
           'cmp' => 'LE',
           'unit' => 'ms_since_1970'
         ]
       ],
       'value' => [
-        'num' => $values[0],
+        'num' => $values[0] * 1000,
         'unit' => 'ms_since_1970'
       ]
     ];

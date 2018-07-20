@@ -184,6 +184,17 @@ class Request
   }
 
   /**
+   * Add a date constraint to the query
+   * @param integer $from Beginning timestamp
+   * @param integer $end  Ending timestamp
+   */
+  public function addDateConstraint($from, $to)
+  {
+    $this->data['user']['constraints'][] = $this->createConstraint('mes:date', 'between_dates', [$from, $to]);
+    return $this;
+  }
+
+  /**
    * Add a constraing to the query
    * @param string $label Constraint label
    * @param string $type  Constraint type (see $types)
@@ -199,7 +210,7 @@ class Request
   protected function createConstraint($label, $type, $data)
   {
     $types = [
-      'between' => 'BetweenValues',
+      'between_dates' => 'BetweenDates',
       'regex' => 'Regex',
       'term' => 'Term'
     ];
