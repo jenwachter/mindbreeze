@@ -73,7 +73,19 @@ class Request
    * creates a gazette constraint that limits search to the two defined datasources
    * @var array
    */
-  public $constraints = [];
+  public $validDatasourceConstraints = [];
+
+  /**
+   * Datasource cnstraints added to the query
+   * @var array
+   */
+  public $datasourceConstraints = [];
+
+  /**
+   * Constraints added to the query
+   * @var array
+   */
+  public $queryConstraints = [];
 
   /**
    * Metadata by which results can be ordered by.
@@ -105,12 +117,6 @@ class Request
    *
    */
   public $order = 'ASCENDING';
-
-  /**
-   * Compiled data
-   * @var array
-   */
-  protected $data = [];
 
   public function __construct($http)
   {
@@ -154,13 +160,11 @@ class Request
    */
   public function addDatasourceConstraint($constraint)
   {
-    if (!isset($this->constraints[$constraint])) {
+    if (!isset($this->validDatasourceConstraints[$constraint])) {
       return [];
     }
 
-    $this->data['source_context'] = [
-      'constraints' => $this->createConstraint('fqcategory', 'term', $this->constraints[$constraint])
-    ];
+    $this->datasourceConstraint = $this->createConstraint('fqcategory', 'term', $this->validDatasourceConstraints[$constraint]);
 
     return $this;
   }
@@ -172,7 +176,7 @@ class Request
    */
   public function addDateConstraint($from, $to)
   {
-    $this->data['user']['constraints'][] = $this->createConstraint('mes:date', 'between_dates', [$from, $to]);
+    $this->queryConstraints[] = $this->createConstraint('mes:date', 'between_dates', [$from, $to]);
     return $this;
   }
 
@@ -185,7 +189,7 @@ class Request
    */
   public function addConstraint($label, $type, $data)
   {
-    $this->data['user']['constraints'][] = $this->createConstraint($label, $type, $data);
+    $this->queryConstraints[] = $this->createConstraint($label, $type, $data);
     return $this;
   }
 
@@ -212,7 +216,7 @@ class Request
    */
   public function compileData()
   {
-    $this->data = [
+    $data = [
       // how many characters long the snippets are
       'content_sample_length' => $this->contentSampleLength,
 
@@ -221,7 +225,7 @@ class Request
         'query' => [
           'and' => ['unparsed' => $this->query]
         ],
-        'constraints' => []
+        'constraints' => $this->queryConstraints
       ],
 
       // how many results to return
@@ -252,11 +256,16 @@ class Request
       }, $this->facets)
     ];
 
+    // add a datasource constraint, if there is one
+    if (!empty($this->datasourceConstraint)) {
+      $data['source_context'] = [
+        'constraints' => $this->datasourceConstraint
+      ];
+    }
 
     // add pagination to data
-
     if ($this->page > 1) {
-      $this->data['result_pages'] = [
+      $data['result_pages'] = [
         'qeng_ids' => $this->getQeng(),
         'pages' => [
           'starts' => [($this->page - 1) * $this->perPage],
@@ -267,7 +276,7 @@ class Request
       ];
     }
 
-    return $this->data;
+    return $data;
   }
 
   /**
