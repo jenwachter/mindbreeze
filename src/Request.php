@@ -126,18 +126,8 @@ class Request
 
   public function setPage($page)
   {
-    if ($page > 1) {
-      $this->data['result_pages'] = [
-        'qeng_ids' => $this->getQeng(),
-        'pages' => [
-          'starts' => [($page - 1) * $this->perPage],
-          'counts' => [$this->perPage],
-          'current_page' => true,
-          'page_number' => $page
-        ]
-      ];
-
-    }
+    $page = (int) $page;
+    $this->page = $page > 0 ? $page : 1;
 
     return $this;
   }
