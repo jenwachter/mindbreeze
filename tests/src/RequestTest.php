@@ -15,11 +15,19 @@ class RequestTest extends BaseTest
   {
     return [
       'content_sample_length' => 300,
-      'query' => ['unparsed' => $query],
+      'user' => [
+        'query' => [
+          'and' => ['unparsed' => $query]
+        ],
+        'constraints' => []
+      ],
       'count' => 10,
       'max_page_count' => 10,
       'alternatives_query_spelling_max_estimated_count' => 10,
-      'properties' => []
+      'properties' => [],
+      'facets' => [],
+      'order' => 'ASCENDING',
+      'orderby' => 'relevance'
     ];
   }
 
@@ -79,7 +87,7 @@ class RequestTest extends BaseTest
 
     $request = new Request($this->createHTTPMock());
     $request->datasources = ['Web:Gazette', 'Web:JHU', 'Web:Hub'];
-    $request->constraints = ['gazette' => ['Web:Gazette']];
+    $request->validDatasourceConstraints = ['gazette' => ['Web:Gazette']];
 
     $request->setQuery($query);
     $request->addDatasourceConstraint('gazette');
@@ -88,30 +96,13 @@ class RequestTest extends BaseTest
 
     $expected['source_context'] = [
       'constraints' => [
+        'label' => 'fqcategory',
         'filter_base' => [
           [
-            'and' => [
+            'label' => 'fqcategory',
+            'or' => [
               [
-                'label' => 'fqcategory',
                 'quoted_term' => 'Web:Gazette'
-              ]
-            ]
-          ]
-        ],
-        'filtered' => [
-          [
-            'and' => [
-              [
-                'label' => 'fqcategory',
-                'quoted_term' => 'Web:JHU'
-              ]
-            ]
-          ],
-          [
-            'and' => [
-              [
-                'label' => 'fqcategory',
-                'quoted_term' => 'Web:Hub'
               ]
             ]
           ]
@@ -132,7 +123,7 @@ class RequestTest extends BaseTest
     $request->setQuery($query);
     $request->setPage(2);
 
-    $this->setExpectedException("\\Mindbreeze\\Exceptions\\RequestException");
+    $this->expectException("\\Mindbreeze\\Exceptions\\RequestException");
     $request->compileData();
   }
 
@@ -148,7 +139,7 @@ class RequestTest extends BaseTest
     $request->setQuery($query);
     $request->setPage(2);
 
-    $this->setExpectedException("\\Mindbreeze\\Exceptions\\RequestException");
+    $this->expectException("\\Mindbreeze\\Exceptions\\RequestException");
     $request->compileData();
   }
 
