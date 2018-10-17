@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <phpunit bootstrap="./bootstrap.php" colors="true">
-
-  <filter>
-    <whitelist processUncoveredFilesFromWhitelist="false">
-      <directory suffix=".php">../src</directory>
-    </whitelist>
-    <blacklist>
+<filter>
+  <whitelist processUncoveredFilesFromWhitelist="false">
+    <directory suffix=".php">../public/assets/themes</directory>
+    <exclude>
       <directory suffix=".php">../vendor</directory>
-    </blacklist>
-  </filter>
-
+    </exclude>
+  </whitelist>
+</filter>
 </phpunit>
