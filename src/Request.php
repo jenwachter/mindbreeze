@@ -97,12 +97,6 @@ class Request
   ];
 
   /**
-   * Default orderby setting
-   * @var string
-   */
-  public $orderby = 'relevance';
-
-  /**
    * Valid orders
    * @var array
    */
@@ -117,6 +111,12 @@ class Request
    *
    */
   public $order = 'ASCENDING';
+
+  /**
+   * Default orderby setting
+   * @var string
+   */
+  public $orderby = 'mes:relevance';
 
   public function __construct($http)
   {
