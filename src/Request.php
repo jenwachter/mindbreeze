@@ -84,61 +84,6 @@ class Request
   public function __construct($http)
   {
     $this->http = $http;
-    $this->generateDefaultData();
-  }
-
-  protected function generateDefaultData()
-  {
-    $this->data = [
-      // how many characters long the snippets are
-      'content_sample_length' => $this->contentSampleLength,
-
-      // user query
-      'user' => [
-        'query' => [
-          'and' => ['unparsed' => '']
-        ],
-        'constraints' => []
-      ],
-
-      // how many results to return
-      'count' => $this->perPage,
-
-      // how many 'pages' to return in 'result_pages' -- helps you present page navigation
-      'max_page_count' => $this->pageCount,
-
-      // how many alternative queries to return
-      'alternatives_query_spelling_max_estimated_count' => $this->alternatives,
-
-      // which properties to return with each search result
-      'properties' => array_map(function ($property) {
-        return [
-          'formats' => ['HTML', 'VALUE'],
-          'name' => $property
-        ];
-      }, $this->properties),
-
-      'facets' => array_map(function ($facet) {
-        return [
-          'formats' => ['HTML'],
-          'name' => $facet
-        ];
-      }, $this->facets)
-    ];
-  }
-
-  /**
-   * Send the request to Mindbreeze
-   * @return object Mindbreeze\Response
-   */
-  public function send()
-  {
-    $response = $this->http->post($this->url, [
-      'body' => json_encode($this->compileData()),
-      'headers' => ['Content-Type' => 'application/json']
-    ]);
-
-    return new \Mindbreeze\Response($this->encodedQuery, $response);
   }
 
   public function setQuery($query)
@@ -230,6 +175,47 @@ class Request
    */
   public function compileData()
   {
+    $this->data = [
+      // how many characters long the snippets are
+      'content_sample_length' => $this->contentSampleLength,
+
+      // user query
+      'user' => [
+        'query' => [
+          'and' => ['unparsed' => '']
+        ],
+        'constraints' => []
+      ],
+
+      // how many results to return
+      'count' => $this->perPage,
+
+      // how many 'pages' to return in 'result_pages' -- helps you present page navigation
+      'max_page_count' => $this->pageCount,
+
+      // how many alternative queries to return
+      'alternatives_query_spelling_max_estimated_count' => $this->alternatives,
+
+      'order' => $this->order,
+      'orderby' => $this->orderby,
+
+      // which properties to return with each search result
+      'properties' => array_map(function ($property) {
+        return [
+          'formats' => ['HTML', 'VALUE'],
+          'name' => $property
+        ];
+      }, $this->properties),
+
+      'facets' => array_map(function ($facet) {
+        return [
+          'formats' => ['HTML'],
+          'name' => $facet
+        ];
+      }, $this->facets)
+    ];
+
+
     // add pagination to data
 
     if ($this->page > 1) {
@@ -245,6 +231,20 @@ class Request
     }
 
     return $this->data;
+  }
+
+  /**
+   * Send the request to Mindbreeze
+   * @return object Mindbreeze\Response
+   */
+  public function send()
+  {
+    $response = $this->http->post($this->url, [
+      'body' => json_encode($this->compileData()),
+      'headers' => ['Content-Type' => 'application/json']
+    ]);
+
+    return new \Mindbreeze\Response($this->encodedQuery, $response);
   }
 
   /**
