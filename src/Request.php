@@ -76,6 +76,37 @@ class Request
   public $constraints = [];
 
   /**
+   * Metadata by which results can be ordered by.
+   * @var array
+   */
+  public $validOrderby = [
+    'relevance' => 'mes:relevance',
+    'date' => 'mes:date'
+  ];
+
+  /**
+   * Default orderby setting
+   * @var string
+   */
+  public $orderby = 'relevance';
+
+  /**
+   * Valid orders
+   * @var array
+   */
+  public $validOrder = [
+    'asc' => 'ASCENDING',
+    'desc' => 'DESCENDING'
+  ];
+
+  /**
+   * Default order setting
+   * @var string
+   *
+   */
+  public $order = 'ASCENDING';
+
+  /**
    * Compiled data
    * @var array
    */
@@ -107,6 +138,22 @@ class Request
       ];
 
     }
+
+    return $this;
+  }
+
+  public function setOrder($orderby, $order = 'desc')
+  {
+    if (!array_key_exists($orderby, $this->validOrderby)) {
+      throw new \Mindbreeze\Exceptions\RequestException($orderby . ' is not a valid field to order by. Please use one of the following: ' . implode(', ', $this->validOrderby));
+    }
+
+    if (!array_key_exists($order, $this->validOrder)) {
+      throw new \Mindbreeze\Exceptions\RequestException($orderby . ' is not a valid order. Please use one of the following: ' . implode(', ', $this->validOrder));
+    }
+
+    $this->orderby = $this->validOrderby[$orderby];
+    $this->order = $this->validOrder[$order];
 
     return $this;
   }
