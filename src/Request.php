@@ -140,6 +140,9 @@ class Request
 
   public function setOrder($orderby, $order = 'desc')
   {
+    $orderby = strtolower($orderby);
+    $order = strtolower($order);
+
     if (!array_key_exists($orderby, $this->validOrderby)) {
       throw new \Mindbreeze\Exceptions\RequestException($orderby . ' is not a valid field to order by. Please use one of the following: ' . implode(', ', $this->validOrderby));
     }
