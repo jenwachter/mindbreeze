@@ -169,4 +169,49 @@ class RequestTest extends BaseTest
 
     $this->assertEquals($expected, $request->compileData());
   }
+
+  public function testCompileData__validOrderBy()
+  {
+    $query = 'hopkins';
+
+    $request = new Request($this->createHTTPMock());
+    $request->setQuery($query);
+    $request->setOrder('date');
+
+    $expected = $this->getDefaultData($query);
+    $expected['orderby'] = 'mes:date';
+
+    $this->assertEquals($expected, $request->compileData());
+  }
+
+  public function testCompileData__invalidOrderBy()
+  {
+    $request = new Request($this->createHTTPMock());
+
+    $this->expectException("\\Mindbreeze\\Exceptions\\RequestException");
+    $request->setOrder('blahblah');
+  }
+
+  public function testCompileData__validOrder()
+  {
+    $query = 'hopkins';
+
+    $request = new Request($this->createHTTPMock());
+    $request->setQuery($query);
+    $request->setOrder('date', 'asc');
+
+    $expected = $this->getDefaultData($query);
+    $expected['orderby'] = 'mes:date';
+    $expected['order_direction'] = 'ASCENDING';
+
+    $this->assertEquals($expected, $request->compileData());
+  }
+
+  public function testCompileData__invalidOrder()
+  {
+    $request = new Request($this->createHTTPMock());
+
+    $this->expectException("\\Mindbreeze\\Exceptions\\RequestException");
+    $request->setOrder('date', 'blahblah');
+  }
 }

@@ -144,11 +144,11 @@ class Request
     $order = strtolower($order);
 
     if (!array_key_exists($orderby, $this->validOrderby)) {
-      throw new \Mindbreeze\Exceptions\RequestException($orderby . ' is not a valid field to order by. Please use one of the following: ' . implode(', ', $this->validOrderby));
+      throw new \Mindbreeze\Exceptions\RequestException($orderby . ' is not a valid field to order by. Please use one of the following: ' . implode(', ', array_keys($this->validOrderby)));
     }
 
     if (!array_key_exists($order, $this->validOrder)) {
-      throw new \Mindbreeze\Exceptions\RequestException($orderby . ' is not a valid order. Please use one of the following: ' . implode(', ', $this->validOrder));
+      throw new \Mindbreeze\Exceptions\RequestException($orderby . ' is not a valid order. Please use one of the following: ' . implode(', ', array_keys($this->validOrder)));
     }
 
     $this->orderby = $this->validOrderby[$orderby];
