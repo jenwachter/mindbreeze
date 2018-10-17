@@ -119,7 +119,7 @@ class Request
 
   public function setQuery($query)
   {
-    $this->data['user']['query']['and']['unparsed'] = $query;
+    $this->query = $query;
     $this->encodedQuery = base64_encode($query);
     return $this;
   }
@@ -219,7 +219,7 @@ class Request
       // user query
       'user' => [
         'query' => [
-          'and' => ['unparsed' => '']
+          'and' => ['unparsed' => $this->query]
         ],
         'constraints' => []
       ],
