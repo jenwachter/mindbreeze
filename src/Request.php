@@ -110,7 +110,7 @@ class Request
    * @var string
    *
    */
-  public $order = 'ASCENDING';
+  public $order = 'DESCENDING';
 
   /**
    * Default orderby setting
@@ -237,7 +237,7 @@ class Request
       // how many alternative queries to return
       'alternatives_query_spelling_max_estimated_count' => $this->alternatives,
 
-      'order' => $this->order,
+      'order_direction' => $this->order,
       'orderby' => $this->orderby,
 
       // which properties to return with each search result

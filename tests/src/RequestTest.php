@@ -26,8 +26,8 @@ class RequestTest extends BaseTest
       'alternatives_query_spelling_max_estimated_count' => 10,
       'properties' => [],
       'facets' => [],
-      'order' => 'ASCENDING',
-      'orderby' => 'relevance'
+      'order_direction' => 'DESCENDING',
+      'orderby' => 'mes:relevance'
     ];
   }
 
